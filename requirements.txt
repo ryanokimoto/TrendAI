@@ -1,0 +1,46 @@
+# Core data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Graph processing and network analysis
+networkx>=3.0
+
+# Community detection (Louvain method)
+python-louvain>=0.16
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Optional: for reading different file formats
+# Parquet support
+pyarrow>=12.0.0
+fastparquet>=2023.4.0
+
+# Optional: for enhanced analysis
+scikit-learn>=1.3.0  # If you want to add clustering/embeddings later
+
+# Core dependencies
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+
+# Optional: For TikTok scraping (unofficial)
+# TikTokApi>=6.0.0
+# playwright>=1.40.0
+
+# Optional: For enhanced AI descriptions
+# openai>=1.0.0
+# anthropic>=0.18.0
+
+# Optional: For async operations
+# aiohttp>=3.9.0
+
+# Data handling
+pandas>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0
