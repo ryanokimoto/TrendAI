@@ -41,14 +41,18 @@ def load_faiss_index(index_path: str) -> faiss.Index:
 
 def reconstruct_embeddings(index: faiss.Index) -> np.ndarray:
     """
-    Reconstruct all vectors from an IndexFlatIP / flat index.
-    For 1100 vectors this is fast. For huge N, still feasible but may take time.
+    Reconstruct all vectors from a FAISS flat index (IndexFlatIP / IndexFlatL2).
     """
     n = index.ntotal
     d = index.d
-    embs = np.empty((n, d), dtype=np.float32)
+
+    embs = np.zeros((n, d), dtype=np.float32)
+
     for i in range(n):
-        embs[i] = index.reconstruct(i)
+        vec = np.zeros(d, dtype=np.float32)
+        index.reconstruct(i, vec)
+        embs[i] = vec
+
     return embs
 
 
