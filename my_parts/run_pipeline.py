@@ -29,7 +29,7 @@ def main():
     metadata_path = "tiktok_data/tiktok_vision_index_metadata.json"
 
     hashtag_df = load_hashtag_to_niche(hashtag_csv)
-    metadata_list = load_metadata_list(metadata_path)
+    metadata_list = load_metadata_list(metadata_path, hashtags_csv_path="batch1.csv")
 
     # maps for trends + saturation
     hashtag_to_niche = dict(zip(hashtag_df["hashtag"], hashtag_df["niche_name"]))
