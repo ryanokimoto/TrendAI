@@ -118,7 +118,7 @@ print(f"Vocabulary size: {len(vectorizer.get_feature_names_out())}")
 
 # Cluster VIDEOS
 print("\nClustering videos...")
-n_clusters = 1000
+n_clusters = 500
 kmeans = MiniBatchKMeans(
     n_clusters=n_clusters, 
     random_state=42, 
