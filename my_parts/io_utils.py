@@ -20,18 +20,79 @@ def load_hashtag_to_niche(csv_path: str = "hashtag_to_niche.csv") -> pd.DataFram
     return df
 
 
-def load_metadata_list(metadata_json_path: str) -> List[Dict[str, Any]]:
+# my_parts/io_utils.py (replace ONLY load_metadata_list with this)
+def load_metadata_list(
+    metadata_json_path: str,
+    hashtags_csv_path: str | None = None,
+    id_col: str = "id",
+    challenges_col: str = "challenges",
+) -> List[Dict[str, Any]]:
     """
-    Loads the saved VideoMetadata list (dicts) from *_metadata.json
+    Loads the saved VideoMetadata list (dicts) from *_metadata.json.
+    Optionally injects hashtags from a CSV (e.g., batch1.csv) that contains a
+    `challenges` column like ["puppy","pets"] or a list of dicts with {"title":...}.
+
+    This avoids editing create_embeddings.py.
     """
     p = Path(metadata_json_path)
     with p.open("r") as f:
         data = json.load(f)
 
-    # normalize hashtags (optional)
+    # normalize hashtags field (keep but won't help if it's empty)
     for row in data:
         tags = row.get("hashtags", []) or []
-        row["hashtags"] = [str(t).strip().lstrip("#") for t in tags if str(t).strip() != ""]
+        if isinstance(tags, list):
+            row["hashtags"] = [str(t).strip().lstrip("#") for t in tags if str(t).strip()]
+        else:
+            row["hashtags"] = []
+
+    if hashtags_csv_path is None:
+        return data
+
+    # --- inject hashtags from CSV ---
+    df = pd.read_csv(hashtags_csv_path)
+
+    import ast
+
+    def parse_challenges(x) -> List[str]:
+        if pd.isna(x):
+            return []
+        s = str(x).strip()
+        try:
+            v = ast.literal_eval(s)
+        except Exception:
+            return []
+
+        out = []
+        if isinstance(v, list):
+            for item in v:
+                if isinstance(item, str) and item.strip():
+                    out.append(item.strip())
+                elif isinstance(item, dict):
+                    t = item.get("title", "")
+                    if isinstance(t, str) and t.strip():
+                        out.append(t.strip())
+        return [h.strip().lstrip("#") for h in out if str(h).strip()]
+
+    # build mapping from video_id -> hashtags from the CSV
+    vid2tags: Dict[str, List[str]] = {}
+    for _, r in df.iterrows():
+        vid = str(r.get(id_col, "")).strip()
+        if not vid:
+            continue
+        tags = parse_challenges(r.get(challenges_col))
+        if tags:
+            vid2tags[vid] = tags
+
+    # apply into metadata list
+    updated = 0
+    for row in data:
+        vid = str(row.get("video_id", "")).strip()
+        if vid in vid2tags:
+            row["hashtags"] = vid2tags[vid]
+            updated += 1
+
+    print(f"[io_utils] Injected hashtags for {updated} / {len(data)} videos from {hashtags_csv_path}")
     return data
 
 
