@@ -1,5 +1,4 @@
-# TrendAI
-# TikTok Trend-Aware Agentic Recommendation System
+# TrendAI (TikTok Trend-Aware Agentic Recommendation System)
 
 This project implements a trend-aware agentic recommendation system designed for TikTok creators. By combining multi-modal content understanding through vision and text, niche-specific clustering, and temporal trend dynamics, the system recommends high-potential hashtags to maximize content virality.
 
