@@ -13,7 +13,7 @@ The data collection and multi-modal processing phase involves collect_data.py fo
 
 ### Installation and Usage
 
-To set up the environment, install the required dependencies using pip install pandas numpy torch sentence-transformers faiss-cpu gradio. For generating vision descriptions, the system requires Ollama to be running with the llava model. The generation process is initiated by running python video_vision_descriptions.py with the appropriate csv and vision arguments. The user interface is launched by executing python run_pipeline_ui.py.
+To set up the environment, install the required dependencies using 'pip install pandas numpy torch sentence-transformers faiss-cpu gradio.' For generating vision descriptions, the system requires Ollama to be running with the llava model. The generation process is initiated by running 'python video_vision_descriptions.py' with the appropriate csv and vision arguments. The user interface is launched by executing 'python run_pipeline_ui.py.'
 
 ### Recommendation Logic
 
