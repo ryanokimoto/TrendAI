@@ -1,23 +1,94 @@
-# TrendAI (TikTok Trend-Aware Agentic Recommendation System)
+# TrendAI — Trend-Aware Agentic Recommendation System for TikTok Creators
 
-This project implements a trend-aware agentic recommendation system designed for TikTok creators. By combining multi-modal content understanding through vision and text, niche-specific clustering, and temporal trend dynamics, the system recommends high-potential hashtags to maximize content virality.
+TrendAI is a trend-aware agentic recommendation system that helps TikTok creators discover high-potential hashtags to maximize content virality.
+The system combines multi-modal video understanding, niche-aware retrieval, and temporal trend modeling to recommend hashtags that are both contextually relevant and emerging in popularity.
 
-### Project Overview
+## System Architecture
 
-The system architecture is built on multi-modal content understanding, using metadata and vision AI models like LLaVA or GPT-4V to generate deep video descriptions. It employs niche-specific indexing to cluster hashtags into vertical categories, ensuring accurate retrieval. The core of the system is a trend-aware ranking policy, which acts as a decision-making agent to balance semantic relevance, trend velocity, and saturation penalties. Users interact with the system through a Gradio-based interface that provides real-time hashtag recommendations and explanations.
+Multi-stage agentic recommendation pipeline:
 
-### Core Project Structure
+1. Video Understanding  
+   - Metadata summarization  
+   - Vision-language caption generation (LLaVA / GPT-4V)
 
-The data collection and multi-modal processing phase involves collect_data.py for scraping and AI summary generation, descriptions_from_metadata.py for text synthesis, and the core module video_vision_descriptions.py, which downloads and analyzes video frames. The embedding and retrieval engine consists of tiktok_search_system.py for vector search management, create_embeddings.py for dataset processing, and tiktok_retrieval_system.py, which implements the multi-index architecture. Analysis and optimization are handled by hashtag_clustering.py for defining content niches and filter.py for refining the hashtag action space. The application layer is managed by run_pipeline_ui.py, supported by the tiktok_vision_index_metadata.json file.
+2. Embedding + Retrieval  
+   - Sentence-BERT embeddings  
+   - FAISS vector search  
+   - Multi-index niche retrieval  
 
-### Installation and Usage
+3. Trend-Aware Ranking Policy  
+   - Semantic similarity scoring  
+   - Trend velocity modeling  
+   - Saturation penalty  
 
-To set up the environment, install the required dependencies using 'pip install pandas numpy torch sentence-transformers faiss-cpu gradio.' For generating vision descriptions, the system requires Ollama to be running with the llava model. The generation process is initiated by running 'python video_vision_descriptions.py' with the appropriate csv and vision arguments. The user interface is launched by executing 'python run_pipeline_ui.py.'
+4. Recommendation Interface  
+   - Real-time hashtag suggestions via Gradio UI  
+   - Explanation-aware recommendations  
 
-### Recommendation Logic
+## Recommendation Policy
 
-The system models the recommendation process as an agentic decision pipeline where the final ranking is determined by a policy function. The score for a given hashtag is calculated based on weighted similarity, velocity, and saturation.
+Each hashtag is scored using a trend-aware objective:
 
-$$Score(h) = w_{sim} \cdot Similarity + w_{vel} \cdot Velocity - w_{sat} \cdot Saturation$$
+Score(h) = w_sim · Similarity  
+         + w_vel · Velocity  
+         − w_sat · Saturation  
 
-This mathematical approach ensures that recommended hashtags are contextually relevant to the video content while also being positioned on an upward growth trajectory within their respective niches.
+## File Structure
+
+### Data and Multi-Modal Processing
+
+- `collect_data.py` — TikTok scraping and AI summary generation  
+- `descriptions_from_metadata.py` — metadata text synthesis  
+- `video_vision_descriptions.py` — frame extraction and vision captioning  
+
+### Embedding and Retrieval Engine
+
+- `create_embeddings.py` — dataset embedding generation  
+- `tiktok_search_system.py` — FAISS vector search management  
+- `tiktok_retrieval_system.py` — multi-index retrieval architecture  
+
+### Analysis and Optimization
+
+- `hashtag_clustering.py` — niche discovery via co-occurrence graph  
+- `filter.py` — action-space pruning  
+
+### Application Layer
+
+- `run_pipeline_ui.py` — Gradio interface  
+- `tiktok_vision_index_metadata.json` — retrieval metadata
+
+## Installation
+
+Install dependencies:
+
+pip install pandas numpy torch sentence-transformers faiss-cpu gradio
+
+For vision captioning:
+
+ollama run llava
+
+---
+
+## Quick Start
+
+Generate video descriptions:
+
+python video_vision_descriptions.py --csv dataset.csv --vision  
+
+Launch the recommendation UI:
+
+python run_pipeline_ui.py  
+
+---
+
+## Example Recommendation
+
+Input video description:
+
+visiting magic kingdom at walt disney world and exploring
+the theme park rides and attractions during our vacations 
+
+Recommended hashtags:
+
+#disneyland (similarity=0.45)
+#wdw (similarity=0.32)
